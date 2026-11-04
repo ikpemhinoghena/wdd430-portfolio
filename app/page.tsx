@@ -21,7 +21,7 @@ export default function Home() {
   return (
     <main id="main-content" className="mx-auto w-full max-w-5xl flex-1 px-6 py-14 sm:py-20 lg:px-8">
       <section aria-labelledby="intro-heading" className="mb-14 max-w-3xl sm:mb-20">
-        <p className="mb-5 text-sm font-medium text-blue-800">Web development &amp; learning</p>
+        <p className="mb-5 inline-block rounded-full border border-blue-800/15 bg-blue-50 px-3 py-1 text-sm font-medium text-blue-800">Web development &amp; learning</p>
         <h1 id="intro-heading" className="text-4xl font-semibold leading-tight tracking-tight sm:text-5xl">
           Hello, I’m Ikpemhinoghena Etiuzale.
         </h1>

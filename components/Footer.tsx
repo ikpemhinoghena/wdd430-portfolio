@@ -2,7 +2,6 @@
 
 export default async function Footer() {
   "use cache";
-  // Cache Components requires a cache boundary around the current date.
   cacheLife("hours");
   const year = new Date().getFullYear();
 

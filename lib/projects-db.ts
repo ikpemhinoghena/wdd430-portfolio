@@ -1,5 +1,6 @@
 import { sql } from "@vercel/postgres";
 import { normalizePage, normalizeQuery, PROJECTS_PER_PAGE } from "./project-search";
+import type { SearchParameters, SearchResults } from "@/types/search";
 
 export interface Project {
   id: number;
@@ -66,7 +67,7 @@ export async function fetchFilteredProjects(query: string, currentPage: number):
   return rows.map(toProject);
 }
 
-export async function fetchProjectsPages(query: string): Promise<number> {
+async function fetchProjectsCount(query: string): Promise<number> {
   const pattern = searchPattern(query);
   const { rows } = await sql<{ count: string }>`
     SELECT COUNT(*) AS count
@@ -75,5 +76,23 @@ export async function fetchProjectsPages(query: string): Promise<number> {
       OR COALESCE(description, '') ILIKE ${pattern}
       OR COALESCE(array_to_string(technologies, ' '), '') ILIKE ${pattern}
   `;
-  return Math.ceil(Number(rows[0].count) / PROJECTS_PER_PAGE);
+  return Number(rows[0].count);
+}
+
+export async function fetchProjectsPages(query: string): Promise<number> {
+  return Math.ceil(await fetchProjectsCount(query) / PROJECTS_PER_PAGE);
+}
+
+export async function fetchProjectResults({ query }: SearchParameters, page: number): Promise<SearchResults<Project>> {
+  const requestedPage = normalizePage(page);
+  const [items, totalResults] = await Promise.all([
+    fetchFilteredProjects(query, requestedPage),
+    fetchProjectsCount(query),
+  ]);
+  const totalPages = Math.ceil(totalResults / PROJECTS_PER_PAGE);
+  const currentPage = Math.min(requestedPage, Math.max(1, totalPages));
+  return {
+    items: totalResults === 0 ? [] : currentPage === requestedPage ? items : await fetchFilteredProjects(query, currentPage),
+    totalResults, totalPages, currentPage, pageSize: PROJECTS_PER_PAGE, hasNextPage: currentPage < totalPages,
+  };
 }

@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useDebouncedCallback } from "use-debounce";
 import { MAX_QUERY_LENGTH, normalizeQuery } from "@/lib/project-search";
 
-export default function ProjectSearch() {
+export default function ProjectSearch({ subject = "projects" }: { subject?: "projects" | "products" }) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { replace } = useRouter();
@@ -27,12 +27,12 @@ export default function ProjectSearch() {
 
   return (
     <div className="mb-8">
-      <label htmlFor="project-search" className="sr-only">Search projects</label>
+      <label htmlFor="project-search" className="sr-only">Search {subject}</label>
       <input
         ref={input}
         id="project-search"
         type="search"
-        placeholder="Search projects..."
+        placeholder={`Search ${subject}...`}
         defaultValue={searchParams.get("query") ?? ""}
         maxLength={MAX_QUERY_LENGTH}
         onChange={(event) => handleSearch(event.target.value)}

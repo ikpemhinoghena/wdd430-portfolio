@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useSearchParams } from "next/navigation";
 import { normalizePage } from "@/lib/project-search";
 
-export default function Pagination({ totalPages }: { totalPages: number }) {
+export default function Pagination({ totalPages, label = "Project pagination" }: { totalPages: number; label?: string }) {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const currentPage = Math.min(normalizePage(searchParams.getAll("page").length > 1 ? undefined : searchParams.get("page")), Math.max(1, totalPages));
@@ -20,7 +20,7 @@ export default function Pagination({ totalPages }: { totalPages: number }) {
   const linkClass = "inline-flex min-h-11 items-center rounded-lg px-4 text-blue-800 hover:bg-blue-50";
 
   return (
-    <nav aria-label="Project pagination" className="mt-8 flex items-center justify-center gap-4">
+    <nav aria-label={label} className="mt-8 flex items-center justify-center gap-4">
       {currentPage > 1 ? (
         <Link href={createPageURL(currentPage - 1)} className={linkClass}>Previous</Link>
       ) : (

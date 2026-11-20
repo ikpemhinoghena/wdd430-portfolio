@@ -1,7 +1,7 @@
 ﻿import ProjectCard, { type ProjectCardProps } from "./ProjectCard";
 
 export interface Project extends ProjectCardProps {
-  id: string;
+  id: string | number;
 }
 
 interface ProjectListProps {
